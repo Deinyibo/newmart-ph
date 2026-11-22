@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewMart — Business Admin</title>
+<style>
+:root{--navy:#12296b;--navy2:#1b3679;--red:#d21f2b;--ink:#1e2235;--mut:#6b7191;--bg:#f4f6fb;--line:#e6e8f4;--green:#059669;--amber:#b45309;--card:#fff;--r:14px;--sh:0 1px 4px rgba(30,34,53,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font:inherit;width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--navy)}
+label{display:block;font-size:12.5px;font-weight:700;color:var(--mut);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.4px}
+.hidden{display:none!important}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+
+/* ===== AUTH ===== */
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy),var(--navy2));padding:20px}
+.auth-card{background:#fff;border-radius:18px;padding:34px 30px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.auth-card .mark{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:800;color:var(--navy);font-size:18px}
+.chip{width:40px;height:40px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;overflow:hidden;flex-shrink:0}
+.chip img{width:100%;height:100%;object-fit:cover}
+.auth-card h1{font-size:22px;letter-spacing:-.3px}
+.auth-card p.sub{color:var(--mut);font-size:14px;margin:4px 0 6px}
+.err{background:#fef2f2;color:#b91c1c;font-size:13.5px;font-weight:600;border-radius:9px;padding:10px 13px;margin-top:12px}
+.hint{margin-top:16px;font-size:12.5px;color:var(--mut);background:var(--bg);border-radius:9px;padding:10px 13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:10px;font-weight:800;font-size:14px;transition:.2s;border:1.5px solid transparent}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy2)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#b31a25}
+.btn-ghost{border-color:var(--line);color:var(--ink)}.btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+.btn-sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+.btn-block{width:100%;margin-top:18px}
+
+/* ===== APP SHELL ===== */
+.topbar{background:var(--navy);color:#fff;position:sticky;top:0;z-index:40}
+.topbar-in{display:flex;align-items:center;gap:12px;height:62px}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.topbar .brand small{display:block;font-size:10.5px;font-weight:600;opacity:.7}
+.topbar .sp{margin-left:auto;display:flex;gap:8px;align-items:center}
+.topbar .btn-ghost{color:#fff;border-color:rgba(255,255,255,.35)}
+.topbar .btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
+.tabs{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:62px;z-index:35}
+.tabs-in{display:flex;gap:4px;overflow-x:auto;padding:8px 0}
+.tab{padding:9px 16px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--mut);white-space:nowrap}
+.tab:hover{color:var(--navy);background:var(--bg)}
+.tab.on{background:var(--navy);color:#fff}
+.main{padding:26px 0 70px}
+.sec-title{font-size:21px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
+.sec-sub{color:var(--mut);font-size:13.5px;margin-bottom:20px}
+
+/* ===== CARDS / TILES ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.tile b{font-size:24px;display:block;letter-spacing:-.5px}
+.tile span{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.tile.good b{color:var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+/* ===== TABLES ===== */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;padding:10px 12px;color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:12px;border-bottom:1px solid var(--bg);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.pcell{display:flex;align-items:center;gap:10px;min-width:180px}
+.pcell img{width:44px;height:44px;border-radius:9px;object-fit:cover;flex-shrink:0}
+.pcell .n{font-weight:700}
+.pcell .c{font-size:11.5px;color:var(--mut)}
+.stock-low{color:var(--red);font-weight:800}
+.stock-ok{color:var(--green);font-weight:800}
+.status{font-size:11px;font-weight:800;border-radius:12px;padding:4px 11px;white-space:nowrap}
+.st-paid{background:#eef2ff;color:#3730a3}.st-prep{background:#fff7e6;color:var(--amber)}.st-ship{background:#eff6ff;color:#1d4ed8}.st-del{background:#f0fdf4;color:#166534}.st-done{background:#f0fdf4;color:#166534}.st-proc{background:#fff7e6;color:var(--amber)}
+
+/* ===== STOREFRONT TAB / PREVIEW ===== */
+.prev{border-radius:var(--r);overflow:hidden;border:1.5px solid var(--line)}
+.prev-band{padding:30px 22px;color:#fff;display:flex;align-items:center;gap:14px}
+.prev-logo{width:56px;height:56px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;overflow:hidden;flex-shrink:0}
+.prev-logo img{width:100%;height:100%;object-fit:cover}
+.prev-band h3{font-size:20px}
+.prev-band p{font-size:13px;opacity:.9}
+.prev-body{padding:16px 22px;background:#fff}
+.prev-btns{display:flex;gap:8px;margin-top:6px}
+.prev-btns span{font-size:12px;font-weight:800;color:#fff;border-radius:8px;padding:7px 14px}
+.color-row{display:flex;gap:10px;align-items:center}
+.color-row input[type=color]{width:56px;height:44px;padding:4px;cursor:pointer}
+.logo-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.logo-opts{grid-template-columns:1fr}}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:99;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ============ SIGN-IN ============ -->
+<div class="auth" id="authView">
+  <div class="auth-card">
+    <div class="mark"><span class="chip">N</span><span>NewMart<br><small style="font-size:11px;font-weight:600;color:var(--mut)">Business Admin</small></span></div>
+    <h1>Sign in to your store</h1>
+    <p class="sub">Manage your storefront, products, orders, wallet and team.</p>
+    <label>Your store</label>
+    <select id="loginStore"></select>
+    <label>Password</label>
+    <input type="password" id="loginPw" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err hidden" id="loginErr">Wrong password. Try again.</div>
+    <button class="btn btn-navy btn-block" onclick="doLogin()">Sign in →</button>
+    <div class="hint">Demo password for all stores: <b>demo1234</b></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <div class="wrap topbar-in">
+      <a href="index.html" class="brand"><span class="chip" id="hdrChip">N</span><span><span id="hdrStore">Store</span><small>NewMart Business Admin</small></span></a>
+      <div class="sp">
+        <a class="btn btn-ghost btn-sm" id="hdrViewStore" href="#">View storefront</a>
+        <button class="btn btn-red btn-sm" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs"><div class="wrap tabs-in" id="tabsBar">
+    <button class="tab on" data-t="overview">Overview</button>
+    <button class="tab" data-t="storefront">Storefront</button>
+    <button class="tab" data-t="products">Products</button>
+    <button class="tab" data-t="orders">Orders</button>
+    <button class="tab" data-t="wallet">Wallet</button>
+    <button class="tab" data-t="payouts">Payouts</button>
+    <button class="tab" data-t="team">Team</button>
+    <button class="tab" data-t="settings">Store settings</button>
+  </div></div>
+
+  <div class="wrap main">
+
+    <!-- OVERVIEW -->
+    <section id="tab-overview">
+      <h2 class="sec-title">Overview</h2>
+      <p class="sec-sub">Your store at a glance.</p>
+      <div class="tiles" id="ovTiles"></div>
+      <div class="card">
+        <h3 style="margin-bottom:12px;font-size:16px">Recent orders</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Buyer</th><th>Total</th><th>Method</th><th>Status</th></tr></thead><tbody id="ovOrders"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- STOREFRONT -->
+    <section id="tab-storefront" class="hidden">
+      <h2 class="sec-title">Storefront</h2>
+      <p class="sec-sub">Your logo, brand colour and how your page looks to buyers.</p>
+      <div class="grid2">
+        <div class="card">
+          <label>Store name</label>
+          <input id="stName" oninput="updPrev()">
+          <label>Tagline</label>
+          <input id="stTag" oninput="updPrev()">
+          <label>Brand colour</label>
+          <div class="color-row">
+            <input type="color" id="stColor" oninput="updPrev()">
+            <input id="stColorHex" oninput="hexTyped()" placeholder="#12296b" style="flex:1">
+          </div>
+          <label>Logo — paste an image link</label>
+          <input id="stLogoUrl" placeholder="https://…logo.png" oninput="logoUrlTyped()">
+          <label>— or upload from your phone</label>
+          <input type="file" id="stLogoFile" accept="image/*" onchange="logoFilePicked(this)">
+          <button class="btn btn-navy btn-block" onclick="saveStorefront()">Save storefront</button>
+        </div>
+        <div>
+          <p style="font-size:12.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Live preview</p>
+          <div class="prev">
+            <div class="prev-band" id="pvBand">
+              <span class="prev-logo" id="pvLogo">L</span>
+              <span><h3 id="pvName">Store</h3><p id="pvTag">Tagline</p></span>
+            </div>
+            <div class="prev-body">
+              <div class="prev-btns"><span id="pvB1">Add to cart</span><span id="pvB2">Checkout</span></div>
+              <p style="font-size:12.5px;color:var(--mut);margin-top:10px">Buttons, links and ratings on your page use your brand colour.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="tab-products" class="hidden">
+      <h2 class="sec-title">Products</h2>
+      <p class="sec-sub">Every product needs a name, price, stock and <b>4 pictures</b>.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3 id="pFormTitle" style="font-size:16px;margin-bottom:4px">Add a product</h3>
+          <label>Product name</label><input id="pName" placeholder="e.g. Ankara Midi Dress">
+          <label>Price (₦)</label><input id="pPrice" type="number" min="0" placeholder="18500">
+          <label>Stock</label><input id="pStock" type="number" min="0" placeholder="10">
+          <label>Category</label><input id="pCat" placeholder="e.g. Dresses">
+          <label>Description</label><textarea id="pDesc" rows="2" placeholder="Short description buyers will see"></textarea>
+          <label>Picture 1 (link)</label><input id="pI1" placeholder="https://…">
+          <label>Picture 2 (link)</label><input id="pI2" placeholder="https://…">
+          <label>Picture 3 (link)</label><input id="pI3" placeholder="https://…">
+          <label>Picture 4 (link)</label><input id="pI4" placeholder="https://…">
+          <button class="btn btn-navy btn-block" id="pSaveBtn" onclick="pSave()">Add product</button>
+          <button class="btn btn-ghost btn-block hidden" id="pCancelBtn" onclick="pCancel()" style="margin-top:8px">Cancel editing</button>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="prodRows"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section id="tab-orders" class="hidden">
+      <h2 class="sec-title">Orders</h2>
+      <p class="sec-sub">Advance each order. Escrow funds release to your wallet (minus 5%) when the buyer confirms delivery; POD on cash collection.</p>
+      <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Buyer</th><th>Items</th><th>Total</th><th>Method</th><th>Status</th><th></th></tr></thead><tbody id="ordRows"></tbody></table></div></div>
+    </section>
+
+    <!-- WALLET -->
+    <section id="tab-wallet" class="hidden">
+      <h2 class="sec-title">Wallet</h2>
+      <p class="sec-sub">Your money, after NewMart's 5% commission.</p>
+      <div class="tiles" id="walTiles"></div>
+      <div class="card" style="max-width:440px">
+        <h3 style="font-size:16px;margin-bottom:4px">Withdraw to your bank</h3>
+        <label>Amount (₦)</label><input id="wdAmt" type="number" min="1000" placeholder="10000">
+        <label>Bank account</label>
+        <select id="wdBank"><option>GTBank ••4521</option><option>Zenith ••8830</option><option>Add new bank…</option></select>
+        <button class="btn btn-red btn-block" onclick="withdraw()">Withdraw</button>
+      </div>
+    </section>
+
+    <!-- PAYOUTS -->
+    <section id="tab-payouts" class="hidden">
+      <h2 class="sec-title">Payouts</h2>
+      <p class="sec-sub">Every withdrawal you've made.</p>
+      <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Ref</th><th>Date</th><th>Amount</th><th>Bank</th><th>Status</th></tr></thead><tbody id="payRows"></tbody></table></div></div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="tab-team" class="hidden">
+      <h2 class="sec-title">Team</h2>
+      <p class="sec-sub">Owner controls everything · Manager handles products &amp; orders · Sales rep handles orders only.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:4px">Add a team member</h3>
+          <label>Full name</label><input id="tName" placeholder="e.g. Amara Eze">
+          <label>Email</label><input id="tEmail" type="email" placeholder="name@yourstore.ng">
+          <label>Role</label>
+          <select id="tRole"><option>Manager</option><option>Sales rep</option></select>
+          <button class="btn btn-navy btn-block" onclick="tAdd()">Add member</button>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead><tbody id="teamRows"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="tab-settings" class="hidden">
+      <h2 class="sec-title">Store settings</h2>
+      <p class="sec-sub">Your story, contact details and social media — buyers see this on your page.</p>
+      <div class="grid2">
+        <div class="card">
+          <label>Our story / history</label><textarea id="sHist" rows="3"></textarea>
+          <label>About the business</label><textarea id="sAbout" rows="3"></textarea>
+          <label>Phone</label><input id="sPhone">
+          <label>Address</label><input id="sAddr">
+        </div>
+        <div class="card">
+          <label>Instagram</label><input id="sIg" placeholder="@yourstore">
+          <label>Facebook</label><input id="sFb" placeholder="yourstore">
+          <label>X (Twitter)</label><input id="sX" placeholder="@yourstore">
+          <label>Website</label><input id="sWeb" placeholder="https://…">
+          <button class="btn btn-navy btn-block" onclick="sSave()">Save settings</button>
+          <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
+          <button class="btn btn-ghost btn-block" style="color:var(--red);border-color:#fecaca" onclick="cancelStore()">Cancel my store</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+var KS="nm_stores_v1", KO="nm_orders_v1";
+function U(id){return "https://images.unsplash.com/photo-"+id+"?w=800&q=70"}
+function IM(a,b,c,d){return [U(a),U(b),U(c),U(d)]}
+var FASH=["1595777457583-95e059d581b8","1594633312681-425c7b97ccd1","1445205170230-053b83016050","1441986300917-64674bd600d8","1523381210434-271e8be1f52b","1542272604-787c3835535d"];
+var GROC=["1542838132-92c53300491e","1540420773420-3366772f4999","1586201375761-83865001e31c","1582722872445-44dc5f7e3c8f","1474979266404-7eaacbcd87c5","1571771894821-ce9b6c11b08e"];
+var TECH=["1505740420928-5e560c06d30e","1590658268037-6bf12165a8df","1608043152269-423dbba4e7e1","1546868871-7041f2a55e12","1583394838336-acd977736f90","1601784551446-20c9e07cdbdb"];
+
+function seedStores(){return {
+"1":{id:1,name:"Lagos Threads",tag:"Ready-to-wear African fashion",cat:"Fashion",area:"Woji, Port Harcourt",rating:4.8,color:"#b45309",logo:"",
+ phone:"+234 801 234 5678",addr:"12 Woji Road, Port Harcourt",about:"Ankara, Adire and Aso-Oke pieces tailored in Rivers State.",history:"Founded in 2019 by two sisters who started sewing from their mother's shop in Woji.",ig:"@lagosthreads",fb:"lagosthreads",x:"@lagosthreads",web:"",
+ wallet:{avail:45250},rev:120500,
+ payouts:[{id:"PO-001",date:"2026-11-10",amount:30000,method:"GTBank ••4521",status:"Paid"}],
+ team:[{name:"Chidi Okafor",email:"owner@lagosthreads.ng",role:"Owner"},{name:"Amara Eze",email:"manager@lagosthreads.ng",role:"Manager"}],
+ products:[
+  {id:101,name:"Ankara Midi Dress",price:18500,stock:12,cat:"Dresses",desc:"Vibrant Ankara print midi dress, tailored to order.",imgs:IM(FASH[0],FASH[1],FASH[2],FASH[3])},
+  {id:102,name:"Agbada Set",price:45000,stock:5,cat:"Traditional",desc:"Three-piece embroidered Agbada, premium fabric.",imgs:IM(FASH[2],FASH[3],FASH[0],FASH[1])},
+  {id:103,name:"Adire T-Shirt",price:9000,stock:20,cat:"Casual",desc:"Hand-dyed Adire tee, every piece unique.",imgs:IM(FASH[4],FASH[5],FASH[2],FASH[3])},
+  {id:104,name:"Aso-Oke Headwrap",price:7500,stock:15,cat:"Accessories",desc:"Woven Aso-Oke gele in rich colours.",imgs:IM(FASH[1],FASH[0],FASH[5],FASH[4])}
+ ]},
+"2":{id:2,name:"GreenGrocer NG",tag:"Fresh food, delivered same day",cat:"Groceries",area:"GRA, Port Harcourt",rating:4.6,color:"#059669",logo:"",
+ phone:"+234 805 777 8899",addr:"8 Evo Road, GRA, Port Harcourt",about:"Farm-fresh produce and pantry staples sourced daily.",history:"Started in 2021 supplying restaurants, now delivering to homes.",ig:"@greengrocerng",fb:"greengrocerng",x:"",web:"",
+ wallet:{avail:31200},rev:78400,
+ payouts:[{id:"PO-101",date:"2026-11-08",amount:20000,method:"Zenith ••8830",status:"Paid"}],
+ team:[{name:"Ngozi Umeh",email:"owner@greengrocer.ng",role:"Owner"}],
+ products:[
+  {id:201,name:"Rice (5kg bag)",price:9500,stock:30,cat:"Pantry",desc:"Stone-free long grain rice.",imgs:IM(GROC[2],GROC[0],GROC[1],GROC[5])},
+  {id:202,name:"Palm Oil (2L)",price:6800,stock:18,cat:"Pantry",desc:"Freshly milled red palm oil.",imgs:IM(GROC[4],GROC[1],GROC[0],GROC[3])},
+  {id:203,name:"Eggs (crate of 30)",price:4800,stock:25,cat:"Fresh",desc:"Farm-fresh eggs, collected daily.",imgs:IM(GROC[3],GROC[5],GROC[1],GROC[0])}
+ ]},
+"3":{id:3,name:"TechPoint Gadgets",tag:"Phones, laptops & accessories",cat:"Electronics",area:"Trans-Amadi, Port Harcourt",rating:4.4,color:"#12296b",logo:"",
+ phone:"+234 809 555 1122",addr:"45 Trans-Amadi Industrial Layout, Port Harcourt",about:"Tested and verified devices, warranty on every one.",history:"In electronics since 2017 — from Computer Village to Port Harcourt.",ig:"@techpointng",fb:"techpointng",x:"@techpointng",web:"",
+ wallet:{avail:88400},rev:210300,
+ payouts:[{id:"PO-201",date:"2026-11-05",amount:50000,method:"GTBank ••4521",status:"Paid"}],
+ team:[{name:"Emeka Obi",email:"owner@techpoint.ng",role:"Owner"},{name:"Sara Wokoma",email:"rep@techpoint.ng",role:"Sales rep"}],
+ products:[
+  {id:301,name:"Wireless Earbuds",price:15500,stock:22,cat:"Audio",desc:"Bluetooth 5.3, 24h battery, noise reduction.",imgs:IM(TECH[1],TECH[0],TECH[2],TECH[3])},
+  {id:302,name:"Power Bank 20,000mAh",price:21000,stock:14,cat:"Power",desc:"Fast charge, dual USB, LED display.",imgs:IM(TECH[2],TECH[5],TECH[1],TECH[3])},
+  {id:303,name:"Bluetooth Speaker",price:27000,stock:9,cat:"Audio",desc:"Deep bass, 12h playtime, splash-proof.",imgs:IM(TECH[4],TECH[2],TECH[0],TECH[5])}
+ ]}
+}}
+
+function seedOrders(){return [
+ {id:"NM-1001",store:1,buyer:"Ada Obi",phone:"+234 802 111 2233",items:"Ankara Midi Dress ×1",total:18500,method:"escrow",stage:0,date:"2026-11-21"},
+ {id:"NM-1002",store:1,buyer:"Tunde Bello",phone:"+234 803 444 5566",items:"Agbada Set ×1",total:45000,method:"pod",stage:1,date:"2026-11-21"},
+ {id:"NM-1003",store:1,buyer:"Blessing Amadi",phone:"+234 806 777 9900",items:"Adire T-Shirt ×2",total:18000,method:"escrow",stage:3,date:"2026-11-19"},
+ {id:"NM-1004",store:2,buyer:"Kelechi Nwafor",phone:"+234 810 222 3344",items:"Rice (5kg) ×1, Palm Oil ×1",total:16300,method:"pod",stage:0,date:"2026-11-22"},
+ {id:"NM-1005",store:3,buyer:"Yusuf Ibrahim",phone:"+234 807 666 5544",items:"Wireless Earbuds ×1",total:15500,method:"escrow",stage:2,date:"2026-11-20"}
+]}
+
+var ES=["Paid","Preparing","Shipped","Delivered","Released"];
+var PS=["Order placed","Preparing","Shipped","Delivered","Cash collected"];
+var STC=["st-paid","st-prep","st-ship","st-del","st-done"];
+
+function load(k,f){try{var v=JSON.parse(localStorage.getItem(k));if(v)return v}catch(e){}return f}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var stores=load(KS,null); if(!stores){stores=seedStores();save(KS,stores)}
+var orders=load(KO,null); if(!orders){orders=seedOrders();save(KO,orders)}
+var sid=sessionStorage.getItem("nm_admin")||"";
+var editId=null, logoData="";
+
+function fmt(n){return "₦"+Number(n).toLocaleString("en-NG")}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+var toastT=null;
+function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");if(toastT)clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},2300)}
+function S(){return stores[sid]}
+function persist(){save(KS,stores);save(KO,orders)}
+
+/* ---------- AUTH ---------- */
+(function initLogin(){
+ var sel=document.getElementById("loginStore"),h="";
+ Object.keys(stores).forEach(function(k){h+='<option value="'+k+'">'+esc(stores[k].name)+' — '+esc(stores[k].cat)+'</option>'});
+ sel.innerHTML=h;
+ if(sid&&stores[sid])showApp();
+})();
+function doLogin(){
+ var pw=document.getElementById("loginPw").value;
+ if(pw==="demo1234"){sid=document.getElementById("loginStore").value;sessionStorage.setItem("nm_admin",sid);showApp()}
+ else document.getElementById("loginErr").classList.remove("hidden");
+}
+function signOut(){sessionStorage.removeItem("nm_admin");location.reload()}
+function showApp(){
+ document.getElementById("authView").classList.add("hidden");
+ document.getElementById("appView").classList.remove("hidden");
+ var s=S();
+ document.getElementById("hdrStore").textContent=s.name;
+ var chip=document.getElementById("hdrChip");
+ if(s.logo){chip.innerHTML='<img src="'+esc(s.logo)+'" alt="">'}else{chip.textContent=s.name.charAt(0);chip.style.background=s.color}
+ document.getElementById("hdrViewStore").href="store.html?id="+sid;
+ renderAll();
+}
+
+/* ---------- TABS ---------- */
+document.getElementById("tabsBar").addEventListener("click",function(e){
+ var b=e.target.closest(".tab");if(!b)return;
+ document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on")});
+ b.classList.add("on");
+ ["overview","storefront","products","orders","wallet","payouts","team","settings"].forEach(function(t){
+  document.getElementById("tab-"+t).classList.toggle("hidden",t!==b.dataset.t)});
+});
+function renderAll(){renderOverview();fillStorefront();renderProducts();renderOrders();renderWallet();renderPayouts();renderTeam();fillSettings()}
+
+/* ---------- OVERVIEW ---------- */
+function myOrders(){return orders.filter(function(o){return o.store==sid})}
+function renderOverview(){
+ var s=S(),mo=myOrders(),open=mo.filter(function(o){return o.stage<4}).length;
+ document.getElementById("ovTiles").innerHTML=
+  '<div class="tile good"><b>'+fmt(s.wallet.avail)+'</b><span>Available balance</span></div>'+
+  '<div class="tile"><b>'+s.products.length+'</b><span>Products live</span></div>'+
+  '<div class="tile"><b>'+open+'</b><span>Open orders</span></div>'+
+  '<div class="tile"><b>'+fmt(s.rev||0)+'</b><span>Lifetime earnings</span></div>';
+ var rows=mo.slice(-5).reverse().map(function(o){
+  var lbl=(o.method==="pod"?PS:ES)[o.stage];
+  return '<tr><td><b>'+esc(o.id)+'</b><br><span style="font-size:11.5px;color:var(--mut)">'+esc(o.date)+'</span></td><td>'+esc(o.buyer)+'</td><td>'+fmt(o.total)+'</td><td>'+(o.method==="pod"?"Pay on delivery":"Escrow")+'</td><td><span class="status '+STC[o.stage]+'">'+lbl+'</span></td></tr>'});
+ document.getElementById("ovOrders").innerHTML=rows||'<tr><td colspan="5" style="color:var(--mut)">No orders yet.</td></tr>';
+}
+
+/* ---------- STOREFRONT ---------- */
+function fillStorefront(){
+ var s=S();
+ document.getElementById("stName").value=s.name;
+ document.getElementById("stTag").value=s.tag;
+ document.getElementById("stColor").value=s.color;
+ document.getElementById("stColorHex").value=s.color;
+ document.getElementById("stLogoUrl").value=(s.logo&&s.logo.indexOf("data:")!==0)?s.logo:"";
+ logoData=(s.logo&&s.logo.indexOf("data:")===0)?s.logo:"";
+ updPrev();
+}
+function curColor(){return document.getElementById("stColorHex").value||"#12296b"}
+function curLogo(){var u=document.getElementById("stLogoUrl").value.trim();return logoData||u||""}
+function updPrev(){
+ var n=document.getElementById("stName").value||"Your store",t=document.getElementById("stTag").value||"Your tagline",c=curColor(),l=curLogo();
+ document.getElementById("pvBand").style.background=c;
+ document.getElementById("pvName").textContent=n;
+ document.getElementById("pvTag").textContent=t;
+ var pl=document.getElementById("pvLogo");
+ if(l){pl.innerHTML='<img src="'+esc(l)+'" alt="">'}else{pl.textContent=n.charAt(0).toUpperCase();pl.style.color=c}
+ document.getElementById("pvB1").style.background=c;
+ document.getElementById("pvB2").style.background=c;
+}
+function hexTyped(){var v=document.getElementById("stColorHex").value.trim();if(/^#[0-9a-fA-F]{6}$/.test(v))document.getElementById("stColor").value=v;updPrev()}
+function logoUrlTyped(){logoData="";updPrev()}
+function logoFilePicked(inp){
+ var f=inp.files&&inp.files[0];if(!f)return;
+ var r=new FileReader();
+ r.onload=function(){logoData=r.result;document.getElementById("stLogoUrl").value="";updPrev();toast("Logo picked — save to apply")};
+ r.readAsDataURL(f);
+}
+function saveStorefront(){
+ var s=S();
+ s.name=document.getElementById("stName").value.trim()||s.name;
+ s.tag=document.getElementById("stTag").value.trim();
+ s.color=curColor();
+ s.logo=curLogo();
+ persist();
+ var chip=document.getElementById("hdrChip");
+ if(s.logo){chip.innerHTML='<img src="'+esc(s.logo)+'" alt="">'}else{chip.textContent=s.name.charAt(0);chip.style.background=s.color}
+ document.getElementById("hdrStore").textContent=s.name;
+ toast("Storefront saved — buyers see it now");
+}
+
+/* ---------- PRODUCTS ---------- */
+function renderProducts(){
+ var s=S();
+ var rows=s.products.map(function(p){
+  var sc=p.stock===0?'<span class="stock-low">Out</span>':(p.stock<6?'<span class="stock-low">'+p.stock+' low</span>':'<span class="stock-ok">'+p.stock+'</span>');
+  return '<tr><td><div class="pcell"><img src="'+esc(p.imgs[0])+'" alt=""><span><span class="n">'+esc(p.name)+'</span><br><span class="c">'+esc(p.cat)+'</span></span></div></td><td>'+fmt(p.price)+'</td><td>'+sc+'</td><td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="pEdit('+p.id+')">Edit</button> <button class="btn btn-ghost btn-sm" onclick="pRestock('+p.id+')">+Stock</button> <button class="btn btn-sm" style="color:var(--red)" onclick="pDel('+p.id+')">Delete</button></td></tr>'});
+ document.getElementById("prodRows").innerHTML=rows||'<tr><td colspan="4" style="color:var(--mut)">No products yet — add your first one.</td></tr>';
+}
+function pEdit(id){
+ var p=S().products.filter(function(x){return x.id===id})[0];if(!p)return;
+ editId=id;
+ document.getElementById("pFormTitle").textContent="Edit: "+p.name;
+ document.getElementById("pName").value=p.name;document.getElementById("pPrice").value=p.price;
+ document.getElementById("pStock").value=p.stock;document.getElementById("pCat").value=p.cat;
+ document.getElementById("pDesc").value=p.desc;
+ document.getElementById("pI1").value=p.imgs[0];document.getElementById("pI2").value=p.imgs[1];
+ document.getElementById("pI3").value=p.imgs[2];document.getElementById("pI4").value=p.imgs[3];
+ document.getElementById("pSaveBtn").textContent="Save changes";
+ document.getElementById("pCancelBtn").classList.remove("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function pCancel(){editId=null;pClear();document.getElementById("pFormTitle").textContent="Add a product";document.getElementById("pSaveBtn").textContent="Add product";document.getElementById("pCancelBtn").classList.add("hidden")}
+function pClear(){["pName","pPrice","pStock","pCat","pDesc","pI1","pI2","pI3","pI4"].forEach(function(i){document.getElementById(i).value=""})}
+function pSave(){
+ var n=document.getElementById("pName").value.trim(),pr=parseFloat(document.getElementById("pPrice").value),
+ st=parseInt(document.getElementById("pStock").value,10),c=document.getElementById("pCat").value.trim(),
+ d=document.getElementById("pDesc").value.trim(),
+ im=[document.getElementById("pI1").value.trim(),document.getElementById("pI2").value.trim(),document.getElementById("pI3").value.trim(),document.getElementById("pI4").value.trim()];
+ if(!n){toast("Product name is required");return}
+ if(!(pr>0)){toast("Enter a valid price");return}
+ if(!(st>=0)){toast("Enter the stock quantity");return}
+ if(im.some(function(u){return !u})){toast("All 4 picture links are required");return}
+ var s=S();
+ if(editId){
+  var p=s.products.filter(function(x){return x.id===editId})[0];
+  p.name=n;p.price=pr;p.stock=st;p.cat=c||"General";p.desc=d;p.imgs=im;
+  toast("Product updated");pCancel();
+ }else{
+  var nid=Math.max.apply(null,s.products.map(function(x){return x.id}).concat([100]))+1;
+  s.products.push({id:nid,name:n,price:pr,stock:st,cat:c||"General",desc:d,imgs:im});
+  toast("Product added — live on your storefront");pClear();
+ }
+ persist();renderProducts();renderOverview();
+}
+function pDel(id){
+ var s=S();
+ if(!confirm("Delete this product from your storefront?"))return;
+ s.products=s.products.filter(function(x){return x.id!==id});
+ persist();renderProducts();renderOverview();toast("Product deleted");
+}
+function pRestock(id){
+ var p=S().products.filter(function(x){return x.id===id})[0];if(!p)return;
+ var q=parseInt(prompt("Add how many units to \""+p.name+"\"?","10"),10);
+ if(!(q>0))return;
+ p.stock+=q;persist();renderProducts();toast("Stock updated to "+p.stock);
+}
+
+/* ---------- ORDERS ---------- */
+function renderOrders(){
+ var rows=myOrders().slice().reverse().map(function(o){
+  var lbl=(o.method==="pod"?PS:ES)[o.stage];
+  var next=o.stage<4?'<button class="btn btn-navy btn-sm" onclick="adv(\''+o.id+'\')">'+(o.method==="pod"?PS[o.stage+1]:ES[o.stage+1])+' →</button>':"";
+  return '<tr><td><b>'+esc(o.id)+'</b><br><span style="font-size:11.5px;color:var(--mut)">'+esc(o.date)+'</span></td><td>'+esc(o.buyer)+'<br><span style="font-size:11.5px;color:var(--mut)">'+esc(o.phone)+'</span></td><td>'+esc(o.items)+'</td><td>'+fmt(o.total)+'</td><td>'+(o.method==="pod"?"POD":"Escrow")+'</td><td><span class="status '+STC[o.stage]+'">'+lbl+'</span></td><td>'+next+'</td></tr>'});
+ document.getElementById("ordRows").innerHTML=rows||'<tr><td colspan="7" style="color:var(--mut)">No orders yet.</td></tr>';
+}
+function adv(oid){
+ var o=orders.filter(function(x){return x.id===oid})[0];if(!o||o.stage>=4)return;
+ o.stage++;
+ if(o.stage===4){
+  var earn=Math.round(o.total*0.95),s=S();
+  s.wallet.avail+=earn;s.rev=(s.rev||0)+earn;
+  toast((o.method==="pod"?"Cash collected":"Funds released")+" — "+fmt(earn)+" added to wallet");
+ }else toast("Order moved to: "+(o.method==="pod"?PS[o.stage]:ES[o.stage]));
+ persist();renderOrders();renderOverview();renderWallet();
+}
+
+/* ---------- WALLET & PAYOUTS ---------- */
+function renderWallet(){
+ var s=S(),pend=myOrders().filter(function(o){return o.stage<4}).reduce(function(a,o){return a+Math.round(o.total*0.95)},0);
+ document.getElementById("walTiles").innerHTML=
+  '<div class="tile good"><b>'+fmt(s.wallet.avail)+'</b><span>Available to withdraw</span></div>'+
+  '<div class="tile"><b>'+fmt(pend)+'</b><span>In escrow / on the way</span></div>'+
+  '<div class="tile"><b>'+fmt(s.rev||0)+'</b><span>Lifetime earnings</span></div>';
+}
+function withdraw(){
+ var s=S(),a=parseFloat(document.getElementById("wdAmt").value);
+ if(!(a>=1000)){toast("Minimum withdrawal is ₦1,000");return}
+ if(a>s.wallet.avail){toast("Amount is more than your available balance");return}
+ var bank=document.getElementById("wdBank").value;
+ s.wallet.avail-=a;
+ s.payouts.unshift({id:"PO-"+Math.floor(100+Math.random()*900),date:new Date().toISOString().slice(0,10),amount:a,method:bank,status:"Processing"});
+ persist();document.getElementById("wdAmt").value="";
+ renderWallet();renderPayouts();renderOverview();
+ toast("Withdrawal of "+fmt(a)+" is processing — paid within 24h");
+}
+function renderPayouts(){
+ var rows=S().payouts.map(function(p){
+  return '<tr><td><b>'+esc(p.id)+'</b></td><td>'+esc(p.date)+'</td><td>'+fmt(p.amount)+'</td><td>'+esc(p.method)+'</td><td><span class="status '+(p.status==="Paid"?"st-done":"st-proc")+'">'+esc(p.status)+'</span></td></tr>'});
+ document.getElementById("payRows").innerHTML=rows||'<tr><td colspan="5" style="color:var(--mut)">No payouts yet.</td></tr>';
+}
+
+/* ---------- TEAM ---------- */
+function renderTeam(){
+ var rows=S().team.map(function(m,i){
+  var rm=m.role==="Owner"?"":'<button class="btn btn-sm" style="color:var(--red)" onclick="tDel('+i+')">Remove</button>';
+  return '<tr><td><b>'+esc(m.name)+'</b></td><td>'+esc(m.email)+'</td><td>'+esc(m.role)+'</td><td>'+rm+'</td></tr>'});
+ document.getElementById("teamRows").innerHTML=rows;
+}
+function tAdd(){
+ var n=document.getElementById("tName").value.trim(),e=document.getElementById("tEmail").value.trim(),r=document.getElementById("tRole").value;
+ if(!n||!/^\S+@\S+\.\S+$/.test(e)){toast("Enter a name and a valid email");return}
+ S().team.push({name:n,email:e,role:r});
+ document.getElementById("tName").value="";document.getElementById("tEmail").value="";
+ persist();renderTeam();toast(n+" added as "+r);
+}
+function tDel(i){
+ var m=S().team[i];
+ if(!confirm("Remove "+m.name+" from your team?"))return;
+ S().team.splice(i,1);persist();renderTeam();toast("Team member removed");
+}
+
+/* ---------- SETTINGS ---------- */
+function fillSettings(){
+ var s=S();
+ document.getElementById("sHist").value=s.history||"";
+ document.getElementById("sAbout").value=s.about||"";
+ document.getElementById("sPhone").value=s.phone||"";
+ document.getElementById("sAddr").value=s.addr||"";
+ document.getElementById("sIg").value=s.ig||"";
+ document.getElementById("sFb").value=s.fb||"";
+ document.getElementById("sX").value=s.x||"";
+ document.getElementById("sWeb").value=s.web||"";
+}
+function sSave(){
+ var s=S();
+ s.history=document.getElementById("sHist").value.trim();
+ s.about=document.getElementById("sAbout").value.trim();
+ s.phone=document.getElementById("sPhone").value.trim();
+ s.addr=document.getElementById("sAddr").value.trim();
+ s.ig=document.getElementById("sIg").value.trim();
+ s.fb=document.getElementById("sFb").value.trim();
+ s.x=document.getElementById("sX").value.trim();
+ s.web=document.getElementById("sWeb").value.trim();
+ persist();toast("Store settings saved");
+}
+function cancelStore(){
+ if(confirm("Cancel your store? Your storefront goes offline and NewMart will contact you to settle any pending orders.")){
+  toast("Cancellation requested — NewMart will reach you within 24h");
+ }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Store — NewMart</title>
+<style>
+:root{--navy:#12296b;--red:#d21f2b;--sc:#12296b;--ink:#1e2235;--mut:#5c6280;--soft:#f6f7fb;--line:#e6e8f4;--green:#059669;--amber:#b45309}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:#fff;line-height:1.55}
+img{display:block;max-width:100%}a{text-decoration:none;color:inherit}button{font:inherit;border:none;background:none;cursor:pointer}input,textarea{font:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.hd{position:sticky;top:0;z-index:50;background:#fff;box-shadow:0 1px 0 var(--line)}
+.hd-in{display:flex;align-items:center;gap:12px;height:62px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:var(--navy)}
+.lchip{width:34px;height:34px;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.lchip img{width:180%;height:180%;object-fit:cover;object-position:58% 42%;margin-left:-40%;margin-top:-22%}
+.hd nav{display:flex;gap:2px;margin-left:6px}
+.hd nav a{padding:8px 11px;border-radius:8px;font-size:14px;font-weight:600;color:#3d4160}
+.hd nav a:hover{background:var(--soft)}
+.hd .sp{margin-left:auto}
+.cartbtn{position:relative;padding:9px 14px;border-radius:9px;border:1.5px solid var(--line);font-weight:700;font-size:14px;background:#fff}
+.cartbtn:hover{border-color:var(--sc);color:var(--sc)}
+.ccount{position:absolute;top:-7px;right:-7px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+@media(max-width:720px){.hd nav{display:none}}
+.hero{background:var(--sc);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 65%);top:-140px;right:-100px}
+.hero-in{display:flex;gap:18px;align-items:center;padding:36px 0;position:relative;z-index:1;flex-wrap:wrap}
+.slogo{width:88px;height:88px;border-radius:18px;object-fit:cover;border:3px solid rgba(255,255,255,.5);background:#fff}
+.sinfo h1{font-size:clamp(23px,4vw,32px);letter-spacing:-.5px}
+.sinfo .tag{opacity:.9;margin-top:3px;font-size:14.5px}
+.smeta{display:flex;gap:10px;flex-wrap:wrap;margin-top:11px;font-size:13px;font-weight:600}
+.smeta span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:4px 12px}
+.verified{background:#f0fdf4!important;color:#166534!important;border-color:#bbf7d0!important}
+.socials{display:flex;gap:8px;margin-left:auto}
+.socials a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;border:1px solid rgba(255,255,255,.25)}
+.socials a:hover{background:rgba(255,255,255,.3)}
+.toolbar{display:flex;gap:12px;align-items:center;padding:20px 0 4px;flex-wrap:wrap}
+.search{flex:1;min-width:200px;display:flex;background:#fff;border:1.5px solid var(--line);border-radius:10px}
+.search input{flex:1;border:none;outline:none;padding:11px 14px;font-size:14px}
+.count-note{font-size:13px;color:var(--mut)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:18px;padding:14px 0 40px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.25s;display:flex;flex-direction:column}
+.pcard:hover{box-shadow:0 14px 34px rgba(18,41,107,.13);transform:translateY(-4px)}
+.pimg{position:relative;aspect-ratio:1/1;background:var(--soft);cursor:pointer}
+.pimg img{width:100%;height:100%;object-fit:cover}
+.dots{position:absolute;bottom:9px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.65);border:1px solid rgba(0,0,0,.15);cursor:pointer}
+.dots i.on{background:#fff;transform:scale(1.3)}
+.stock{position:absolute;top:10px;left:10px;font-size:11px;font-weight:800;border-radius:12px;padding:4px 10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.stock.in{color:var(--green)}.stock.low{color:var(--amber)}.stock.out{color:var(--red)}
+.pbody{padding:13px 13px 15px;display:flex;flex-direction:column;flex:1}
+.pname{font-weight:700;font-size:14.5px;cursor:pointer}.pname:hover{color:var(--sc)}
+.pcat{font-size:12px;color:var(--mut);margin-top:2px}
+.pprice{font-size:17.5px;font-weight:800;color:var(--sc);margin:9px 0 11px}
+.padd{margin-top:auto;background:var(--sc);color:#fff;border-radius:9px;padding:11px;font-weight:800;font-size:14px}
+.padd:hover{filter:brightness(1.12)}.padd:disabled{background:#c9cede;cursor:not-allowed}
+.empty{text-align:center;color:var(--mut);padding:36px 0;display:none}
+.about{background:var(--soft);border-top:1px solid var(--line);padding:44px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.acard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
+.acard h3{font-size:16px;margin-bottom:7px;color:var(--sc)}
+.acard p{font-size:14px;color:#3d4160}
+.acard .row{font-size:13.5px;padding:5px 0;color:#3d4160}
+.tchip{display:inline-block;background:var(--soft);border-radius:8px;padding:6px 11px;font-size:13px;margin:3px 4px 0 0}
+.tchip b{color:var(--sc)}
+@media(max-width:720px){.about-grid{grid-template-columns:1fr}}
+.overlay{position:fixed;inset:0;background:rgba(18,25,53,.5);z-index:80;opacity:0;pointer-events:none;transition:.25s}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,94vw);background:#fff;z-index:90;transform:translateX(102%);transition:.3s;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.18)}
+.drawer.show{transform:none}
+.dr-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;font-size:16.5px}
+.dr-x{font-size:21px;color:var(--mut)}
+.dr-b{flex:1;overflow-y:auto;padding:8px 18px}
+.ci{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--soft);align-items:center}
+.ci img{width:54px;height:54px;border-radius:9px;object-fit:cover}
+.ci .nm{flex:1;min-width:0}.ci .nm b{font-size:13.5px;display:block}.ci .nm span{font-size:12.5px;color:var(--mut)}
+.qty{display:flex;align-items:center;gap:7px}
+.qty button{width:25px;height:25px;border-radius:7px;border:1.5px solid var(--line);font-weight:800;font-size:13px}
+.qty button:hover{border-color:var(--sc);color:var(--sc)}
+.ci .rm{color:var(--red);font-size:17px;padding:4px}
+.dr-f{border-top:1px solid var(--line);padding:14px 18px}
+.dr-total{display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:11px}
+.dr-checkout{width:100%;background:var(--sc);color:#fff;border-radius:10px;padding:13px;font-weight:800;font-size:15px}
+.dr-checkout:disabled{background:#c9cede}
+.dr-empty{text-align:center;color:var(--mut);padding:46px 0}
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(18,25,53,.55)}
+.modal.show{display:flex}
+.sheet{background:#fff;border-radius:16px;width:min(560px,100%);max-height:92vh;overflow-y:auto;padding:22px}
+.sheet h2{font-size:19px;margin-bottom:3px}
+.sheet .sub{font-size:13px;color:var(--mut);margin-bottom:14px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:4px}
+.field input,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;outline:none}
+.field input:focus,.field textarea:focus{border-color:var(--sc)}
+.methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:5px 0 14px}
+.method{border:1.5px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;font-size:12.5px}
+.method b{display:block;font-size:14px;margin-bottom:2px}
+.method.on{border-color:var(--sc);background:var(--soft)}
+.go{width:100%;background:var(--sc);color:#fff;border-radius:10px;padding:13px;font-weight:800;font-size:15px;margin-top:4px}
+.mclose{float:right;font-size:21px;color:var(--mut)}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pv .big{border-radius:12px;overflow:hidden;aspect-ratio:1/1;background:var(--soft)}
+.pv .big img{width:100%;height:100%;object-fit:cover}
+.thumbs{display:flex;gap:7px;margin-top:9px}
+.thumbs img{width:56px;height:56px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent}
+.thumbs img.on{border-color:var(--sc)}
+@media(max-width:600px){.pv{grid-template-columns:1fr}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:120;max-width:92vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+footer{background:var(--navy);color:#c8d2f2;border-top:4px solid var(--red);padding:24px 0;text-align:center;font-size:13px}
+footer b{color:#fff}
+</style></head><body>
+<header class="hd"><div class="wrap hd-in">
+<a class="brand" href="market.html"><span class="lchip"><img src="https://uploads.kirachat.com/files%2F68471816-258b-49df-aa6d-21a894a42798%2Fnew%20technologies%20logo?alt=media&amp;token=f762f0e2-a2dc-4b48-9b61-eaf9ff28f927" alt="New Technologies"></span>NewMart</a>
+<nav><a href="market.html">Marketplace</a><a href="dashboard.html">My orders</a><a href="sell.html">Sell</a><a href="admin.html">Admin</a></nav>
+<div class="sp"><button class="cartbtn" id="cartOpen">🛒 Cart<span class="ccount" id="ccount">0</span></button></div>
+</div></header>
+<section class="hero"><div class="wrap hero-in" id="heroIn"></div></section>
+<div class="wrap toolbar"><div class="search"><input id="q" placeholder="Search this store…"></div><span class="count-note" id="countNote"></span></div>
+<div class="wrap"><div class="pgrid" id="pgrid"></div><p class="empty" id="emptyMsg">No products match your search.</p></div>
+<section class="about"><div class="wrap about-grid" id="aboutGrid"></div></section>
+<footer><div class="wrap"><b>Built by New Technologies</b> — Innovation &amp; Excellence · © 2026 New Technologies</div></footer>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+<div class="dr-h">Your cart <button class="dr-x" id="drClose">✕</button></div>
+<div class="dr-b" id="drBody"></div>
+<div class="dr-f"><div class="dr-total"><span>Total</span><span id="drTotal">₦0</span></div>
+<button class="dr-checkout" id="toCheckout">Checkout securely →</button></div>
+</aside>
+<div class="modal" id="checkoutModal"><div class="sheet">
+<button class="mclose" data-close>✕</button>
+<h2>Checkout</h2><p class="sub">Escrow-protected — your money is held until you confirm delivery.</p>
+<div class="field"><label>Full name</label><input id="coName" placeholder="e.g. Adaeze Okafor"></div>
+<div class="field"><label>Phone (+234)</label><input id="coPhone" placeholder="0803 000 0000" inputmode="tel"></div>
+<div class="field"><label>Delivery address</label><input id="coAddr" placeholder="Street, area, city"></div>
+<label style="font-size:12.5px;font-weight:700">Payment method</label>
+<div class="methods">
+<div class="method on" data-m="escrow"><b>🔒 Pay now (escrow)</b>Card / transfer / USSD via Paystack. Released to the seller only after you confirm.</div>
+<div class="method" data-m="pod"><b>💵 Pay on delivery</b>Cash or transfer to the rider when your order arrives.</div>
+</div>
+<button class="go" id="placeOrder">Place order — <span id="coTotal">₦0</span></button>
+</div></div>
+<div class="modal" id="productModal"><div class="sheet"><button class="mclose" data-close>✕</button><div class="pv" id="pvBody"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+/* =====================================================
+   PLATFORM ADMIN (New Technologies) MASTER DATA.
+   Edit store logos, colours, pictures and text here.
+   Every image is a free-to-use Unsplash photo.
+   A business's own edits in admin.html override these.
+   ===================================================== */
+function U(id){return "https://images.unsplash.com/"+id+"?w=800&q=70&auto=format&fit=crop";}
+var DEFAULT_STORES={
+"1":{name:"Lagos Threads",tagline:"Ready-to-wear African fashion",color:"#9a3412",location:"Woji, Port Harcourt",rating:4.8,category:"Fashion",
+ logo:U("photo-1441986300917-64674bd600d8"),
+ about:"Lagos Threads makes premium Ankara, Adire and Aso-Oke pieces, tailored in Rivers State by skilled hands.",
+ history:"Founded in 2019 as a two-machine tailor shop, we have grown into one of Port Harcourt's most loved fashion houses.",
+ phone:"+234 803 111 2222",address:"12 Woji Road, Port Harcourt",
+ socials:{ig:"https://instagram.com",fb:"https://facebook.com",x:"https://x.com",web:""},
+ team:[{name:"Adaeze Okafor",role:"Owner"},{name:"Tunde Bello",role:"Manager"},{name:"Chiamaka Eze",role:"Sales rep"}],
+ products:[
+  {id:"lt1",name:"Ankara Midi Dress",cat:"Dresses",price:18500,stock:14,pics:[U("photo-1595777457583-95e059d581b8"),U("photo-1572804013309-59a88b7e92f1"),U("photo-1496747611176-843222e1e57c"),U("photo-1490481651871-ab68de25d43d")]},
+  {id:"lt2",name:"Agbada Set (3-piece)",cat:"Men",price:45000,stock:6,pics:[U("photo-1594938298603-c8148c4dae35"),U("photo-1507679799987-c73779587ccf"),U("photo-1617137968427-85924c800a22"),U("photo-1610652492500-ded49ceeb378")]},
+  {id:"lt3",name:"Adire T-Shirt",cat:"Unisex",price:9000,stock:40,pics:[U("photo-1521572163474-6864f9cf17ab"),U("photo-1576566588028-4147f3842f27"),U("photo-1503341504253-dff4815485f1"),U("photo-1583743814966-8936f5b7be1a")]},
+  {id:"lt4",name:"Aso-Oke Headwrap",cat:"Accessories",price:7500,stock:0,pics:[U("photo-1539109136881-3be0616acf4b"),U("photo-1515886657613-9f3515b0c78f"),U("photo-1524504388940-b1c1722653e1"),U("photo-1487412720507-e7ab37603c6f")]}
+ ]},
+"2":{name:"GreenGrocer NG",tagline:"Fresh food, delivered same day",color:"#166534",location:"GRA, Port Harcourt",rating:4.6,category:"Groceries",
+ logo:U("photo-1542838132-92c53300491e"),
+ about:"Farm-fresh produce and pantry staples sourced daily from markets and farms across Rivers State.",
+ history:"Started in 2020 delivering to 12 homes; today we serve hundreds of households and restaurants in Port Harcourt.",
+ phone:"+234 805 333 4444",address:"8 GRA Phase 2, Port Harcourt",
+ socials:{ig:"https://instagram.com",fb:"https://facebook.com",x:"",web:"https://example.com"},
+ team:[{name:"Emeka Nwosu\",role:\"Owner\"}],
+ products:[
+  {id:"gg1",name:"Rice (5kg bag)",cat:"Pantry",price:9500,stock:50,pics:[U("photo-1586201375761-83865001e31c"),U("photo-1516684732162-798a0062be99"),U("photo-1536304993881-ff6e9eefa2a6"),U("photo-1568347355280-d33fdf77d42a")]},
+  {id:"gg2",name:"Palm Oil (2L)",cat:"Pantry",price:6800,stock:30,pics:[U("photo-1474979266404-7eaacbcd87c5"),U("photo-1620706857370-e1b9770e8bb1"),U("photo-1606923829579-0cb981a83e4e"),U("photo-1596040033229-a9821ebd058d")]},
+  {id:"gg3",name:"Eggs (crate of 30)",cat:"Fresh",price:4800,stock:25,pics:[U("photo-1582722872445-44dc5f7e3c8f"),U("photo-1506976785307-8732e854ad03"),U("photo-1598965675045-45c5e72c7d05"),U("photo-1569127959161-2b1297b2d9a6")]},
+  {id:"gg4",name:"Fresh Tomato Basket",cat:"Fresh",price:5500,stock:12,pics:[U("photo-1546094096-0df4bcaaa337"),U("photo-1592924357228-91a4daadcfea"),U("photo-1561136594-7f68413baa99"),U("photo-1607305387299-a3d9611cd469")]}
+ ]},
+"3":{name:"TechPoint Gadgets",tagline:"Phones, laptops & accessories",color:"#1e40af",location:"Trans-Amadi, Port Harcourt",rating:4.4,category:"Electronics",
+ logo:U("photo-1531297484001-80022131f5a1"),
+ about:"Tested and verified devices with warranty on every one. Phones, laptops, audio and power.",
+ history:"From a single desk in 2018 to Port Harcourt's trusted gadget house — every device checked before it ships.",
+ phone:"+234 807 555 6666",address:"Plot 4 Trans-Amadi Industrial Layout, Port Harcourt",
+ socials:{ig:"https://instagram.com",fb:"",x:"https://x.com",web:""},
+ team:[{name:"Ifeanyi Obi\",role:\"Owner\"}],
+ products:[
+  {id:"tp1",name:"Wireless Earbuds",cat:"Audio",price:15500,stock:22,pics:[U("photo-1590658268037-6bf12165a8df"),U("photo-1572569511254-d8f925fe2cbb"),U("photo-1606220945770-b5b6c2c55bf1"),U("photo-1608156639585-b3a032ef9689")]},
+  {id:"tp2",name:"Power Bank 20,000mAh",cat:"Power",price:21000,stock:18,pics:[U("photo-1609091839311-d5365f9ff1c5"),U("photo-1583863788434-e58a36330cf0"),U("photo-1619489646924-b4fce76b1db5"),U("photo-1618410320928-25228d811631")]},
+  {id:"tp3",name:"Bluetooth Speaker",cat:"Audio",price:27000,stock:9,pics:[U("photo-1608043152269-423dbba4e7e1"),U("photo-1545454675-3531b543be5d"),U("photo-1589256469067-ea99122bbdc4"),U("photo-1595246140625-573b715d11dc")]},
+  {id:"tp4",name:"Laptop Stand (Aluminium)",cat:"Accessories",price:12000,stock:30,pics:[U("photo-1527864550417-7fd91fc51a46"),U("photo-1611186871348-b1ce696e52c9"),U("photo-1616335192543-b1f0b45b3b10"),U("photo-1625842268584-8f3296236761")]}
+ ]}
+};
+/* ---- helpers ---- */
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function fmt(n){return "₦"+Number(n).toLocaleString("en-NG");}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var toastEl=document.getElementById("toast"),tT=null;
+function toast(m){toastEl.textContent=m;toastEl.classList.add("show");if(tT)clearTimeout(tT);tT=setTimeout(function(){toastEl.classList.remove("show");},2300);}
+/* ---- resolve store: defaults + admin overrides ---- */
+var storeId=(new URLSearchParams(location.search)).get("id")||"1";
+var base=DEFAULT_STORES[storeId]||DEFAULT_STORES["1"];
+var ov=lsGet("nm_store_"+storeId,null)||{};
+var store=Object.assign({},base,ov);
+var products=lsGet("nm_products_"+storeId,base.products);
+document.documentElement.style.setProperty("--sc",store.color||"#12296b");
+document.title=store.name+" — NewMart";
+/* ---- hero ---- */
+var s=store.socials||{},soc="";
+if(s.ig)soc+='<a href="'+s.ig+'" target="_blank" rel="noopener">IG</a>';
+if(s.fb)soc+='<a href="'+s.fb+'" target="_blank" rel="noopener">f</a>';
+if(s.x)soc+='<a href="'+s.x+'" target="_blank" rel="noopener">𝕏</a>';
+if(s.web)soc+='<a href="'+s.web+'" target="_blank" rel="noopener">🔗</a>';
+document.getElementById("heroIn").innerHTML=
+'<img class="slogo" src="'+esc(store.logo)+'" alt="'+esc(store.name)+' logo" onerror="this.src=\''+U("photo-1472851294608-062f824d29cc")+'\'">'
++'<div class="sinfo"><h1>'+esc(store.name)+'</h1><p class="tag">'+esc(store.tagline)+'</p>'
++'<div class="smeta"><span>📍 '+esc(store.location)+'</span><span>⭐ '+store.rating+'</span><span>'+esc(store.category)+'</span><span class="verified">✓ Verified business</span></div></div>'
++'<div class="socials">'+soc+'</div>';
+/* ---- about ---- */
+var teamHtml=(store.team||[]).map(function(t){return '<span class="tchip"><b>'+esc(t.name)+'</b> · '+esc(t.role)+'</span>';}).join("");
+document.getElementById("aboutGrid").innerHTML=
+'<div class="acard"><h3>About '+esc(store.name)+'</h3><p>'+esc(store.about||"")+'</p>'
++'<div class="row" style="margin-top:10px">📞 '+esc(store.phone||"")+'</div><div class="row">📍 '+esc(store.address||"")+'</div></div>'
++'<div class="acard"><h3>Our history</h3><p>'+esc(store.history||"")+'</p><h3 style="margin-top:14px">Meet the team</h3>'+teamHtml+'</div>';
+/* ---- products ---- */
+var picIdx={};
+function stockCls(n){return n<=0?["out","Out of stock"]:n<=5?["low","Only "+n+" left"]:["in","In stock"];}
+function renderProducts(){
+ var q=(document.getElementById("q").value||"").toLowerCase();
+ var grid=document.getElementById("pgrid"),shown=0,html="";
+ products.forEach(function(p){
+  if(q&&(p.name+" "+p.cat).toLowerCase().indexOf(q)===-1)return;
+  shown++;var st=stockCls(p.stock);picIdx[p.id]=0;
+  var dots=p.pics.map(function(_,i){return '<i data-p="'+p.id+'" data-i="'+i+'" class="'+(i===0?"on":"")+'"></i>';}).join("");
+  html+='<div class="pcard"><div class="pimg" data-open="'+p.id+'"><img id="img-'+p.id+'" src="'+p.pics[0]+'" alt="'+esc(p.name)+'" loading="lazy">'
+   +'<span class="stock '+st[0]+'">'+st[1]+'</span><div class="dots">'+dots+'</div></div>'
+   +'<div class="pbody"><div class="pname" data-open="'+p.id+'">'+esc(p.name)+'</div><div class="pcat">'+esc(p.cat)+'</div>'
+   +'<div class="pprice">'+fmt(p.price)+'</div>'
+   +'<button class="padd" data-add="'+p.id+'" '+(p.stock<=0?"disabled":"")+'>'+(p.stock<=0?"Sold out":"Add to cart")+'</button></div></div>';
+ });
+ grid.innerHTML=html;
+ document.getElementById("emptyMsg").style.display=shown?"none":"block";
+ document.getElementById("countNote").textContent=shown+" product"+(shown===1?"":"s");
+}
+document.getElementById("q").addEventListener("input",renderProducts);
+document.getElementById("pgrid").addEventListener("click",function(e){
+ var d=e.target.closest(".dots i");
+ if(d){var p=d.dataset.p;picIdx[p]=+d.dataset.i;
+  document.getElementById("img-"+p).src=findP(p).pics[picIdx[p]];
+  d.parentNode.querySelectorAll("i").forEach(function(i){i.classList.remove("on");});d.classList.add("on");return;}
+ var a=e.target.closest("[data-add]");if(a){addToCart(a.dataset.add);return;}
+ var o=e.target.closest("[data-open]");if(o){openProduct(o.dataset.open);}
+});
+function findP(id){return products.find(function(p){return p.id===id;});}
+/* ---- product modal ---- */
+function openProduct(id){
+ var p=findP(id);if(!p)return;picIdx[id]=0;
+ var thumbs=p.pics.map(function(src,i){return '<img src="'+src+'" data-i="'+i+'" class="'+(i===0?"on":"")+'">';}).join("");
+ document.getElementById("pvBody").innerHTML=
+ '<div><div class="big"><img id="pvImg" src="'+p.pics[0]+'" alt="'+esc(p.name)+'"></div><div class="thumbs">'+thumbs+'</div></div>'
+ +'<div><h2>'+esc(p.name)+'</h2><p class="sub">'+esc(p.cat)+' · '+stockCls(p.stock)[1]+'</p>'
+ +'<div class="pprice" style="font-size:24px">'+fmt(p.price)+'</div>'
+ +'<p style="font-size:14px;color:#3d4160;margin-bottom:16px">Sold by '+esc(store.name)+'. Escrow-protected — released to the seller only after you confirm delivery, or pay on delivery.</p>'
+ +'<button class="go" data-pvadd="'+p.id+'" '+(p.stock<=0?"disabled style=\"background:#c9cede\"":"")+'>'+(p.stock<=0?"Sold out":"Add to cart — "+fmt(p.price))+'</button></div>';
+ var pm=document.getElementById("productModal");pm.classList.add("show");
+ pm.querySelector(".thumbs").addEventListener("click",function(ev){
+  var t=ev.target.closest("img");if(!t)return;
+  document.getElementById("pvImg").src=p.pics[+t.dataset.i];
+  pm.querySelectorAll(".thumbs img").forEach(function(i){i.classList.remove("on");});t.classList.add("on");
+ });
+ var b=pm.querySelector("[data-pvadd]");if(b)b.onclick=function(){addToCart(p.id);pm.classList.remove("show");};
+}
+/* ---- cart ---- */
+var cartKey="nm_cart";
+function getCart(){return lsGet(cartKey,[]);}
+function setCart(c){lsSet(cartKey,c);renderCart();}
+function cartItems(){return getCart().filter(function(i){return i.store===storeId;});}
+function addToCart(id){
+ var p=findP(id);if(!p||p.stock<=0)return;
+ var c=getCart();c.push({store:storeId,pid:id,qty:1});setCart(c);
+ toast("Added — "+p.name);
+}
+function renderCart(){
+ var items=cartItems();
+ document.getElementById("ccount").textContent=items.reduce(function(a,i){return a+i.qty;},0);
+ var body=document.getElementById("drBody"),total=0;
+ if(!items.length){body.innerHTML='<p class="dr-empty">Your cart is empty.<br>Beautiful things await. 🛍️</p>';}
+ else{
+  body.innerHTML=items.map(function(i,ix){
+   var p=findP(i.pid);if(!p)return "";
+   total+=p.price*i.qty;
+   return '<div class="ci"><img src="'+p.pics[0]+'" alt=""><div class="nm"><b>'+esc(p.name)+'</b><span>'+fmt(p.price)+' each</span></div>'
+   +'<div class="qty"><button data-q="-1" data-ix="'+ix+'">−</button><span>'+i.qty+'</span><button data-q="1" data-ix="'+ix+'">+</button></div>'
+   +'<button class="rm" data-rm="'+ix+'" title="Remove">🗑</button></div>';
+  }).join("");
+ }
+ document.getElementById("drTotal").textContent=fmt(total);
+ document.getElementById("toCheckout").disabled=!items.length;
+}
+document.getElementById("drBody").addEventListener("click",function(e){
+ var rm=e.target.closest("[data-rm]"),qb=e.target.closest("[data-q]");
+ var mine=cartItems(),all=getCart();
+ if(rm){var victim=mine[+rm.dataset.rm];var ix=all.indexOf(victim);if(ix>-1)all.splice(ix,1);setCart(all);toast("Removed from cart");}
+ if(qb){var it=mine[+qb.dataset.ix];var p=findP(it.pid);it.qty+=+qb.dataset.q;if(it.qty<1)it.qty=1;if(p&&it.qty>p.stock){it.qty=p.stock;toast("Only "+p.stock+" in stock");}setCart(all);}
+});
+var drawer=document.getElementById("drawer"),overlay=document.getElementById("overlay");
+function openDrawer(){drawer.classList.add("show");overlay.classList.add("show");renderCart();}
+function closeDrawer(){drawer.classList.remove("show");overlay.classList.remove("show");}
+document.getElementById("cartOpen").addEventListener("click",openDrawer);
+document.getElementById("drClose").addEventListener("click",closeDrawer);
+overlay.addEventListener("click",closeDrawer);
+/* ---- checkout ---- */
+var method="escrow";
+document.querySelectorAll(".method").forEach(function(m){m.addEventListener("click",function(){
+ document.querySelectorAll(".method").forEach(function(x){x.classList.remove("on");});
+ m.classList.add("on");method=m.dataset.m;
+});});
+document.getElementById("toCheckout").addEventListener("click",function(){
+ var total=cartItems().reduce(function(a,i){var p=findP(i.pid);return a+(p?p.price*i.qty:0);},0);
+ document.getElementById("coTotal").textContent=fmt(total);
+ document.getElementById("checkoutModal").classList.add("show");
+});
+document.getElementById("placeOrder").addEventListener("click",function(){
+ var name=document.getElementById("coName").value.trim(),
+     phone=document.getElementById("coPhone").value.trim(),
+     addr=document.getElementById("coAddr").value.trim();
+ if(!name||!phone||!addr){toast("Please fill your name, phone and address");return;}
+ var mine=cartItems();if(!mine.length){toast("Your cart is empty");return;}
+ var total=mine.reduce(function(a,i){var p=findP(i.pid);return a+(p?p.price*i.qty:0);},0);
+ mine.forEach(function(i){var p=findP(i.pid);if(p){p.stock=Math.max(0,p.stock-i.qty);}});
+ lsSet("nm_products_"+storeId,products);
+ var orders=lsGet("nm_orders",[]);
+ var id="NM-"+Date.now().toString(36).toUpperCase();
+ orders.unshift({id:id,store:storeId,storeName:store.name,items:mine.map(function(i){var p=findP(i.pid);return{name:p.name,qty:i.qty,price:p.price};}),
+  total:total,method:method,stage:1,name:name,phone:phone,addr:addr,at:new Date().toISOString()});
+ lsSet("nm_orders",orders);
+ var all=getCart();setCart(all.filter(function(i){return i.store!==storeId;}));
+ document.getElementById("checkoutModal").classList.remove("show");closeDrawer();renderProducts();
+ toast(method==="escrow"?"Order "+id+" placed — held in escrow 🔒":"Order "+id+" placed — pay on delivery 💵");
+ setTimeout(function(){location.href="dashboard.html";},1200);
+});
+document.querySelectorAll("[data-close]").forEach(function(b){b.addEventListener("click",function(){
+ b.closest(".modal").classList.remove("show");
+});});
+renderProducts();renderCart();
+</script></body></html>

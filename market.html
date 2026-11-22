@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewMart — Your Business, Everywhere Your Customers Shop | by New Technologies</title>
+<meta name="description" content="NewMart by New Technologies — open a free storefront, take escrow-protected payments or pay on delivery, and withdraw your money within 24 hours.">
+<style>
+:root{
+  --navy:#12296b; --navy2:#1b3679; --red:#d21f2b; --red-d:#b31a25;
+  --ink:#1e2235; --mut:#5c6280; --bg:#ffffff; --soft:#f6f7fb;
+  --line:#e6e8f4; --green:#059669;
+  --r:14px; --shadow:0 1px 4px rgba(30,34,53,.08); --shadow-lg:0 16px 40px rgba(18,41,107,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{font:inherit;border:none;background:none;cursor:pointer}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+
+/* ===== NAV ===== */
+.nav{position:fixed;inset:0 0 auto 0;z-index:60;transition:background .3s,box-shadow .3s}
+.nav-inner{display:flex;align-items:center;gap:14px;height:68px}
+.nav.scrolled{background:#fff;box-shadow:0 1px 0 var(--line),0 8px 24px rgba(18,41,107,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:#fff}
+.nav.scrolled .brand{color:var(--navy)}
+.brand small{display:block;font-size:10px;font-weight:600;opacity:.7;letter-spacing:.3px}
+.logo-chip{width:38px;height:38px;border-radius:9px;background:#fff;overflow:hidden;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.logo-chip img{width:180%;height:180%;object-fit:cover;object-position:58% 42%;margin-left:-40%;margin-top:-22%}
+.nav-links{display:flex;gap:2px;margin-left:16px}
+.nav-links a{padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:rgba(255,255,255,.85)}
+.nav.scrolled .nav-links a{color:var(--ink)}
+.nav-links a:hover{background:rgba(255,255,255,.12)}
+.nav.scrolled .nav-links a:hover{background:var(--soft)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.pill-btn{display:inline-block;background:var(--red);color:#fff;padding:10px 18px;border-radius:30px;font-weight:800;font-size:14px;transition:.2s}
+.pill-btn:hover{background:var(--red-d)}
+.link-btn{color:#fff;font-weight:700;font-size:14px;padding:10px 6px}
+.nav.scrolled .link-btn{color:var(--navy)}
+.burger{display:none;color:#fff;font-size:22px;padding:8px}
+.nav.scrolled .burger{color:var(--navy)}
+.m-menu{position:fixed;inset:0;background:rgba(18,41,107,.98);z-index:70;display:none;flex-direction:column;padding:26px}
+.m-menu.open{display:flex}
+.m-menu a{color:#fff;font-size:20px;font-weight:700;padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.12)}
+.m-close{align-self:flex-end;color:#fff;font-size:26px;padding:6px}
+
+/* ===== HERO ===== */
+.hero{position:relative;min-height:92vh;display:flex;align-items:center;color:#fff;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=70") center/cover}
+.hero-veil{position:absolute;inset:0;background:linear-gradient(105deg,rgba(10,20,55,.88) 20%,rgba(18,41,107,.55) 60%,rgba(18,41,107,.25))}
+.hero .wrap{position:relative;z-index:2;padding-top:110px;padding-bottom:70px}
+.hero h1{font-size:clamp(34px,6vw,62px);line-height:1.08;font-weight:800;letter-spacing:-1px;max-width:640px}
+.hero p.sub{margin:18px 0 28px;font-size:clamp(15px,2vw,18px);max-width:520px;opacity:.9}
+.email-pill{display:flex;max-width:480px;background:#fff;border-radius:40px;padding:5px;box-shadow:var(--shadow-lg)}
+.email-pill input{flex:1;border:none;outline:none;background:none;padding:12px 18px;font-size:15px;color:var(--ink);min-width:0}
+.email-pill button{background:var(--red);color:#fff;border-radius:30px;padding:12px 24px;font-weight:800;font-size:14.5px;white-space:nowrap}
+.hero-alt{margin-top:14px;font-size:13.5px;opacity:.85}
+.hero-alt a{color:#fff;text-decoration:underline;font-weight:700}
+
+/* ===== SECTIONS ===== */
+section[id]{scroll-margin-top:72px}
+.section{padding:84px 0}
+.section.soft{background:var(--soft)}
+.kicker{color:var(--red);font-weight:800;font-size:13px;letter-spacing:1.2px;text-transform:uppercase}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 46px}
+.sec-head h2{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.5px;margin:8px 0 10px}
+.sec-head p{color:var(--mut);font-size:16px}
+
+/* ===== TRUST ===== */
+.trust{padding:30px 0;border-bottom:1px solid var(--line)}
+.trust .label{text-align:center;color:var(--mut);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.trust-row{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-top:18px}
+.trust-row span{font-weight:800;font-size:17px;color:#9aa0bd}
+
+/* ===== SELL EVERYWHERE ===== */
+.sell-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.sell-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 22px;transition:.25s}
+.sell-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.sell-card .ic{width:48px;height:48px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.sell-card h3{font-size:17px;margin-bottom:6px}
+.sell-card p{font-size:14px;color:var(--mut)}
+.sell-card a{display:inline-block;margin-top:14px;color:var(--red);font-weight:800;font-size:14px}
+
+/* ===== MANAGE / DASHBOARD ===== */
+.manage-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
+.manage-copy h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.5px;margin:8px 0}
+.manage-copy p{color:var(--mut);margin:14px 0 22px;font-size:16px}
+.manage-list{list-style:none;margin-bottom:26px}
+.manage-list li{padding:9px 0 9px 30px;position:relative;font-size:15px;font-weight:600}
+.manage-list li::before{content:"✓";position:absolute;left:0;top:9px;color:var(--green);font-weight:800}
+.dash-mock{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden}
+.dash-top{background:var(--navy);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.dash-top .dot{width:9px;height:9px;border-radius:50%;background:var(--red)}
+.dash-body{padding:18px}
+.dash-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid var(--soft);font-size:14px;flex-wrap:wrap}
+.dash-row:last-child{border-bottom:none}
+.dash-row .who{flex:1;min-width:140px}
+.dash-row .amt{font-weight:800}
+.status{font-size:11px;font-weight:800;border-radius:12px;padding:3px 10px;white-space:nowrap}
+.status.held{background:#fff7e6;color:#b45309}
+.status.ship{background:#eef2ff;color:#3730a3}
+.status.rel{background:#f0fdf4;color:#166534}
+
+/* ===== STATS ===== */
+.stats{background:var(--navy);color:#fff}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.stats-grid b{font-size:clamp(28px,4vw,42px);display:block;letter-spacing:-1px}
+.stats-grid span{font-size:13.5px;opacity:.8}
+
+/* ===== FEATURES ===== */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat-card{border-radius:var(--r);overflow:hidden;background:#fff;border:1px solid var(--line);transition:.25s}
+.feat-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.feat-card .band{height:140px;background:linear-gradient(120deg,var(--navy),var(--navy2));position:relative;display:flex;align-items:flex-end;padding:18px}
+.feat-card .band .big{font-size:44px;position:absolute;top:-6px;right:10px;opacity:.35}
+.feat-card .band h4{color:#fff;font-size:18px;position:relative;z-index:1}
+.feat-card .body{padding:18px}
+.feat-card .body p{font-size:14px;color:var(--mut)}
+.feat-card .body a{display:inline-block;margin-top:12px;color:var(--red);font-weight:800;font-size:14px}
+
+/* ===== PRICING ===== */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.plan{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px 24px;display:flex;flex-direction:column}
+.plan.hot{border:2.5px solid var(--navy);position:relative;box-shadow:var(--shadow-lg)}
+.plan .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:11.5px;font-weight:800;border-radius:20px;padding:5px 16px;letter-spacing:.5px}
+.plan h3{font-size:18px}
+.plan .price{font-size:38px;font-weight:800;letter-spacing:-1px;margin:12px 0 2px}
+.plan .price small{font-size:14px;font-weight:600;color:var(--mut)}
+.plan .per{font-size:13px;color:var(--mut);margin-bottom:16px}
+.plan ul{list-style:none;margin:6px 0 22px;flex:1}
+.plan li{font-size:14px;padding:7px 0 7px 26px;position:relative;color:#3d4160}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+.plan .btn{display:block;text-align:center;padding:13px;border-radius:10px;font-weight:800;font-size:14.5px;border:1.5px solid var(--navy);color:var(--navy);transition:.2s}
+.plan .btn:hover{background:var(--soft)}
+.plan.hot .btn{background:var(--red);border-color:var(--red);color:#fff}
+.plan.hot .btn:hover{background:var(--red-d)}
+
+/* ===== FAQ ===== */
+.faq{max-width:760px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:20px 4px;font-weight:700;font-size:16px;color:var(--ink)}
+.faq-q .pm{color:var(--red);font-size:22px;font-weight:800;transition:transform .25s}
+.faq-item.open .pm{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--mut);font-size:15px}
+.faq-a p{padding:0 4px 20px}
+
+/* ===== FINAL CTA ===== */
+.final-cta{background:var(--navy);color:#fff;border-top:4px solid var(--red);text-align:center}
+.final-cta h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.5px}
+.final-cta p{margin:14px auto 26px;opacity:.85;max-width:520px}
+.final-cta .email-pill{margin:0 auto}
+
+/* ===== FOOTER ===== */
+footer{background:#fff;border-top:1px solid var(--line);padding:60px 0 28px}
+.foot-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:26px}
+.foot-grid h5{font-size:12.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);margin-bottom:14px}
+.foot-grid a{display:block;font-size:14px;color:#3d4160;padding:5px 0}
+.foot-grid a:hover{color:var(--navy)}
+.foot-brand{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--navy);font-size:17px}
+.foot-bottom{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:99;box-shadow:var(--shadow-lg);max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  .sell-grid,.stats-grid{grid-template-columns:repeat(2,1fr)}
+  .feat-grid,.plan-grid{grid-template-columns:1fr;max-width:520px;margin:0 auto}
+  .manage-grid{grid-template-columns:1fr;gap:30px}
+  .foot-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .nav-links,.link-btn{display:none}
+  .burger{display:block}
+  .section{padding:60px 0}
+  .sell-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span class="logo-chip"><img src="https://uploads.kirachat.com/files%2F68471816-258b-49df-aa6d-21a894a42798%2Fnew%20technologies%20logo?alt=media&amp;token=f762f0e2-a2dc-4b48-9b61-eaf9ff28f927" alt="New Technologies logo"></span>
+      <span>NewMart<small>by New Technologies</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Marketplace</a>
+      <a href="#sell">Sell everywhere</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <a class="link-btn" href="dashboard.html">Sign in</a>
+      <a class="pill-btn" href="sell.html">Start free</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</nav>
+
+<div class="m-menu" id="mMenu">
+  <button class="m-close" id="mClose" aria-label="Close menu">✕</button>
+  <a href="index.html">Marketplace</a>
+  <a href="#sell">Sell everywhere</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#faq">FAQ</a>
+  <a href="dashboard.html">Sign in</a>
+  <a href="sell.html" style="color:#ffb3b8">Start free</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-veil"></div>
+  <div class="wrap">
+    <h1>Your business, everywhere your customers shop.</h1>
+    <p class="sub">Open a free NewMart storefront, take secure online payments protected by escrow — or let customers pay on delivery — and withdraw your money within 24 hours.</p>
+    <form class="email-pill" id="heroForm">
+      <input type="email" id="heroEmail" placeholder="Enter your email address" aria-label="Email address" required>
+      <button type="submit">Start free</button>
+    </form>
+    <p class="hero-alt">Free to start · No setup fee · 5% only when you sell · <a href="#manage">See how it works</a></p>
+  </div>
+</header>
+
+<!-- ================= TRUST ================= -->
+<section class="trust">
+  <div class="wrap">
+    <p class="label">Trusted by growing businesses across Nigeria</p>
+    <div class="trust-row">
+      <span>Lagos Threads</span>
+      <span>GreenGrocer NG</span>
+      <span>TechPoint Gadgets</span>
+      <span>Woji Fashion House</span>
+      <span>GRA Fresh Market</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SELL EVERYWHERE ================= -->
+<section class="section" id="sell">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Sell everywhere</span>
+      <h2>One business. Every way your customers buy.</h2>
+      <p>NewMart puts your products where your customers already are — online, on social, and at their doorstep.</p>
+    </div>
+    <div class="sell-grid">
+      <div class="sell-card">
+        <div class="ic">🏪</div>
+        <h3>Online storefront</h3>
+        <p>Your own branded store page with products, prices and stock — live in minutes, no coding needed.</p>
+        <a href="sell.html">Open your store →</a>
+      </div>
+      <div class="sell-card">
+        <div class="ic">💬</div>
+        <h3>Social &amp; WhatsApp</h3>
+        <p>Share your storefront link anywhere your customers chat, and turn everyday messages into real orders.</p>
+        <a href="sell.html">Start sharing →</a>
+      </div>
+      <div class="sell-card">
+        <div class="ic">💵</div>
+        <h3>Pay on delivery</h3>
+        <p>Let customers pay cash or transfer at their doorstep — NewMart tracks every POD order end to end.</p>
+        <a href="#faq">How POD works →</a>
+      </div>
+      <div class="sell-card">
+        <div class="ic">📊</div>
+        <h3>Business admin</h3>
+        <p>Products, orders, staff roles and payouts in one dashboard your whole team can use.</p>
+        <a href="admin.html">See the admin →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANAGE EVERYTHING ================= -->
+<section class="section soft" id="manage">
+  <div class="wrap manage-grid">
+    <div class="manage-copy">
+      <span class="kicker">Manage everything</span>
+      <h2>Run your whole business from one dashboard.</h2>
+      <p>From the first click to the final payout, every order moves through NewMart with full visibility — for you and for your customer.</p>
+      <ul class="manage-list">
+        <li>Escrow holds every online payment until delivery is confirmed</li>
+        <li>Add products and update stock in seconds</li>
+        <li>Owner, manager and sales rep roles for your team</li>
+        <li>Withdraw to your bank within 24 hours of delivery</li>
+      </ul>
+      <a class="pill-btn" href="sell.html">Start free</a>
+    </div>
+    <div class="dash-mock">
+      <div class="dash-top"><span class="dot"></span> NewMart Business Admin — Orders</div>
+      <div class="dash-body">
+        <div class="dash-row"><span class="who">NM-1024 · Ankara Midi Dress</span><span class="amt">₦18,500</span><span class="status held">Held in escrow</span></div>
+        <div class="dash-row"><span class="who">NM-1023 · Rice (5kg bag)</span><span class="amt">₦9,500</span><span class="status ship">Shipped</span></div>
+        <div class="dash-row"><span class="who">NM-1021 · Wireless Earbuds</span><span class="amt">₦15,500</span><span class="status rel">Released</span></div>
+        <div class="dash-row"><span class="who">NM-1019 · Agbada Set</span><span class="amt">₦45,000</span><span class="status rel">Released</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="section stats">
+  <div class="wrap stats-grid">
+    <div><b>₦0</b><span>Setup fee — opening your store is free</span></div>
+    <div><b>5%</b><span>Commission, only when you sell</span></div>
+    <div><b>24h</b><span>Payout after delivery is confirmed</span></div>
+    <div><b>100%</b><span>Escrow protection on online payments</span></div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Built for Nigeria</span>
+      <h2>Everything you need to sell with confidence.</h2>
+      <p>Payments, stock and delivery — handled the way Nigerian business actually works.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="band"><span class="big">🔒</span><h4>Escrow &amp; payments</h4></div>
+        <div class="body">
+          <p>Card, transfer and USSD via Paystack. The buyer's money stays in escrow until they confirm delivery — then it's released to you automatically, minus 5%.</p>
+          <a href="#faq">How escrow works →</a>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="band"><span class="big">📦</span><h4>Inventory &amp; orders</h4></div>
+        <div class="body">
+          <p>Add products, set prices and stock levels, and watch every order move from paid to delivered in real time — your whole team sees the same picture.</p>
+          <a href="admin.html">See the admin →</a>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="band"><span class="big">🚚</span><h4>Delivery &amp; payouts</h4></div>
+        <div class="body">
+          <p>Offer pay on delivery with buyer phone verification for safety, and withdraw your earnings to your bank account within 24 hours.</p>
+          <a href="sell.html">Start selling →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="section soft" id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Pricing</span>
+      <h2>Simple pricing that grows with you.</h2>
+      <p>Start free. Pay only when your business earns.</p>
+    </div>
+    <div class="plan-grid">
+      <div class="plan">
+        <h3>Free</h3>
+        <div class="price">₦0<small>/month</small></div>
+        <div class="per">For new businesses getting started</div>
+        <ul>
+          <li>Free storefront on NewMart</li>
+          <li>Up to 20 products</li>
+          <li>Escrow + pay on delivery</li>
+          <li>5% commission per completed sale</li>
+          <li>Email support</li>
+        </ul>
+        <a class="btn" href="sell.html">Start free</a>
+      </div>
+      <div class="plan hot">
+        <span class="tag">Most popular</span>
+        <h3>Business</h3>
+        <div class="price">₦4,500<small>/month</small></div>
+        <div class="per">For growing sellers</div>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Unlimited products</li>
+          <li>Staff roles &amp; team logins</li>
+          <li>Store analytics &amp; reports</li>
+          <li>Priority payout queue</li>
+          <li>Priority support</li>
+        </ul>
+        <a class="btn" href="sell.html">Start Business</a>
+      </div>
+      <div class="plan">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <div class="per">For large catalogues &amp; chains</div>
+        <ul>
+          <li>Everything in Business</li>
+          <li>Multiple storefronts</li>
+          <li>Dedicated account manager</li>
+          <li>Custom commission rates</li>
+          <li>API access</li>
+        </ul>
+        <a class="btn" href="sell.html">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">FAQ</span>
+      <h2>Questions, answered.</h2>
+      <p>What sellers and buyers ask us most.</p>
+    </div>
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-q" type="button">How does escrow protect my money?<span class="pm">+</span></button>
+        <div class="faq-a"><p>When a buyer pays online, NewMart holds the money securely — the seller cannot touch it. The seller prepares and ships the order, the buyer confirms delivery, and only then is the payment released, minus our 5% commission. If anything goes wrong, the buyer raises a dispute and our team steps in to refund or resolve it.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">What does NewMart charge sellers?<span class="pm">+</span></button>
+        <div class="faq-a"><p>Opening a store is free. On the Free plan there is no monthly fee — just 5% commission on each completed sale. Paid plans add staff logins, analytics and priority payouts for a flat monthly price, so you always know exactly what you're paying.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Can I offer pay on delivery?<span class="pm">+</span></button>
+        <div class="faq-a"><p>Yes — pay on delivery is built in as a first-class option, not an afterthought. New buyers verify their phone number, and new accounts may have an order value limit, which keeps POD safe for you and for your customers.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">When do I receive my money?<span class="pm">+</span></button>
+        <div class="faq-a"><p>The moment a buyer confirms delivery, your earnings land in your NewMart wallet. Withdrawals to your bank account complete within 24 hours — no waiting for month-end settlements.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">How do I start selling?<span class="pm">+</span></button>
+        <div class="faq-a"><p>Tap "Start free", tell us about your business, and your storefront goes live the same day. Add your products, share your store link with your customers, and you're open for business.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="section final-cta">
+  <div class="wrap">
+    <h2>Start selling today.</h2>
+    <p>Your customers are already shopping. Open your free NewMart store and meet them there.</p>
+    <form class="email-pill" id="ctaForm">
+      <input type="email" id="ctaEmail" placeholder="Enter your email address" aria-label="Email address" required>
+      <button type="submit">Start free</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">
+          <span class="logo-chip"><img src="https://uploads.kirachat.com/files%2F68471816-258b-49df-aa6d-21a894a42798%2Fnew%20technologies%20logo?alt=media&amp;token=f762f0e2-a2dc-4b48-9b61-eaf9ff28f927" alt="New Technologies logo"></span>
+          <span>NewMart</span>
+        </div>
+        <p style="font-size:13px;color:var(--mut);margin-top:10px;max-width:240px">Nigeria's trusted multi-vendor marketplace — escrow-protected payments and pay on delivery, built for how Nigeria really shops.</p>
+      </div>
+      <div>
+        <h5>Marketplace</h5>
+        <a href="store.html?id=1">Shop stores</a>
+        <a href="dashboard.html">Track my order</a>
+        <a href="#faq">Buyer protection</a>
+        <a href="#faq">Pay on delivery</a>
+      </div>
+      <div>
+        <h5>Sellers</h5>
+        <a href="sell.html">Start selling</a>
+        <a href="admin.html">Business admin</a>
+        <a href="#pricing">Pricing</a>
+        <a href="admin.html">Staff logins</a>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <a href="#manage">How NewMart works</a>
+        <a href="#sell">Sell everywhere</a>
+        <a href="#pricing">Plans</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <h5>Get started</h5>
+        <a href="sell.html">Start free</a>
+        <a href="dashboard.html">Sign in</a>
+        <a href="index.html">Marketplace</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 NewMart · Built by New Technologies — Innovation &amp; Excellence</span>
+      <span>Port Harcourt · Nigeria</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Nav: transparent -> white on scroll ---------- */
+  var nav = document.getElementById("nav");
+  function onScroll(){ nav.classList.toggle("scrolled", window.scrollY > 24); }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- Mobile menu ---------- */
+  var burger = document.getElementById("burger");
+  var mMenu = document.getElementById("mMenu");
+  var mClose = document.getElementById("mClose");
+  burger.addEventListener("click", function(){
+    mMenu.classList.add("open");
+    burger.setAttribute("aria-expanded", "true");
+  });
+  function closeMenu(){
+    mMenu.classList.remove("open");
+    burger.setAttribute("aria-expanded", "false");
+  }
+  mClose.addEventListener("click", closeMenu);
+  mMenu.addEventListener("click", function(e){
+    if (e.target.tagName === "A") closeMenu();
+  });
+
+  /* ---------- Toast ---------- */
+  var toast = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 2400);
+  }
+
+  /* ---------- Email pills: validate, remember, go to sign-up ---------- */
+  function wireForm(formId, inputId){
+    var form = document.getElementById(formId);
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var email = document.getElementById(inputId).value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast("Please enter a valid email address");
+        return;
+      }
+      try { localStorage.setItem("newmart_signup_email", email); } catch (err) {}
+      showToast("Welcome aboard — opening seller sign-up…");
+      setTimeout(function(){ window.location.href = "sell.html"; }, 900);
+    });
+  }
+  wireForm("heroForm", "heroEmail");
+  wireForm("ctaForm", "ctaEmail");
+
+  /* ---------- FAQ accordion (one open at a time) ---------- */
+  var items = document.querySelectorAll(".faq-item");
+  items.forEach(function(item){
+    var q = item.querySelector(".faq-q");
+    var a = item.querySelector(".faq-a");
+    q.addEventListener("click", function(){
+      var wasOpen = item.classList.contains("open");
+      items.forEach(function(i){
+        i.classList.remove("open");
+        i.querySelector(".faq-a").style.maxHeight = null;
+      });
+      if (!wasOpen) {
+        item.classList.add("open");
+        a.style.maxHeight = a.scrollHeight + "px";
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
